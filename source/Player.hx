@@ -54,7 +54,7 @@ class Player extends FlxSprite
 		drag.x = _drag;
 	}
 	
-	override public function update():Void 
+	override public function update(e:Float):Void 
 	{
 		if (_freezeTimer <= 0) {
 			if (alive) {
@@ -62,7 +62,7 @@ class Player extends FlxSprite
 				animations();
 				levelBounds();
 			}
-			super.update();
+			super.update(e);
 		} else _freezeTimer--;
 		Reg.playerPos = FlxPoint.get(x, y);
 	}
@@ -75,7 +75,7 @@ class Player extends FlxSprite
 		
 		if (Reg.joypad == null) Reg.joypad = FlxG.gamepads.lastActive;
 		else {
-			var joyX:Float = Reg.joypad.getXAxis(XboxButtonID.LEFT_ANALOGUE_X);
+			var joyX:Float = Reg.joypad.getXAxis(XboxButtonID.LEFT_ANALOG_STICK);
 			if (Math.abs(joyX) > _deadzone) _xMove += joyX;
 			if (Reg.joypad.justPressed(XboxButtonID.A)) _jump = true;
 			if (Reg.joypad.justReleased(XboxButtonID.A) && velocity.y < 0) velocity.y = velocity.y * 0.5;

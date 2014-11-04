@@ -1,6 +1,6 @@
 package ;
 import flixel.FlxObject;
-import flixel.util.FlxPoint;
+import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxPath;
 
@@ -33,12 +33,12 @@ class SmartEnemy extends Enemy
 		makeHitbox();
 	}
 	
-	override public function update():Void 
+	override public function update(elapsed:Float):Void 
 	{														//NEXT TWO LINES ARE IN CASE YOU PLACE THE ENEMY IN THE AIR ABOVE THE DESIRED POSITION
 		if (path == null) {									//IF THERE IS NO PATH SET
 			if (justTouched(FlxObject.FLOOR)) makePath();	//WHEN THE ENEMY TOUCHES GROUND, MAKE A PATH
 		} else checkPlayerPos();							//ELSE CHECK PLAYER POSITION
-		super.update();
+		super.update(elapsed);
 	}
 	
 	/**

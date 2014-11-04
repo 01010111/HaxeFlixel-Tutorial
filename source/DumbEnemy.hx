@@ -30,12 +30,12 @@ class DumbEnemy extends Enemy
 		makeHitbox();
 	}
 	
-	override public function update():Void 
+	override public function update(elapsed:Float):Void 
 	{
 		if (justTouched(FlxObject.RIGHT)) velocity.x = -maxSpeed;
 		else if (justTouched(FlxObject.LEFT)) velocity.x = maxSpeed;
 		if (justTouched(FlxObject.FLOOR)) (Reg.playerPos.x < x)? velocity.x = -maxSpeed: velocity.x = maxSpeed;
-		if (isOnScreen()) super.update();
+		if (isOnScreen()) super.update(elapsed);
 	}
 	
 	

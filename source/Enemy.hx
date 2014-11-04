@@ -25,9 +25,9 @@ class Enemy extends FlxSprite
 		hitBox = new Hitbox(this, x, y, width, height);
 	}
 	
-	override public function update():Void 
+	override public function update(elapsed:Float):Void 
 	{
-		super.update();
+		super.update(elapsed);
 		hitBox.setPosition(x, y);
 		if (y > Reg.level.heightInTiles * Reg.tileWidth) super.kill();
 		if (!alive) angle += velocity.x * 0.25;

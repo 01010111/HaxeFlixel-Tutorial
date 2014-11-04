@@ -1,18 +1,20 @@
 package;
 
-import flixel.FlxCamera;
+import flixel.FlxCamera.FlxCameraFollowStyle;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.FlxState;
 import flixel.group.FlxGroup;
-import flixel.group.FlxTypedGroup;
 import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
 import flixel.tweens.FlxTween;
 import flixel.util.FlxStringUtil;
+import flixel.tile.FlxBaseTilemap.FlxTilemapAutoTiling;
 import flixel.util.FlxTimer;
 import openfl.Assets;
+import flixel.text.FlxText.FlxTextAlign;
+import flixel.text.FlxText.FlxTextBorderStyle;
 
 class PlayState extends FlxState
 {
@@ -51,7 +53,7 @@ class PlayState extends FlxState
 	function addLevel():Void
 	{
 		Reg.level = new FlxTilemap();
-		Reg.level.loadMap("assets/data/Map" + level + "_Level.csv", "assets/images/tiles.png", Reg.tileWidth, Reg.tileWidth);
+		Reg.level.loadMapFromCSV("assets/data/Map" + level + "_Level.csv", "assets/images/tiles.png", Reg.tileWidth, Reg.tileWidth);
 		for (i in 16...31) Reg.level.setTileProperties(i, FlxObject.UP);
 		for (i in 32...63) Reg.level.setTileProperties(i, FlxObject.NONE);
 		add(Reg.level);
@@ -123,34 +125,34 @@ class PlayState extends FlxState
 	{
 		timerText = new FlxText(0, 0, FlxG.width);
 		timerText.scrollFactor.set();
-		timerText.setFormat(null, 8, 0xdeeed6, "left", FlxText.BORDER_SHADOW, 0x4e4a4e);
+		timerText.setFormat(null, 8, 0xdeeed6, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, 0x4e4a4e);
 		add(timerText);
 		
 		livesText = new FlxText(0, 0, FlxG.width);
 		livesText.scrollFactor.set();
-		livesText.setFormat(null, 8, 0xdeeed6, "left", FlxText.BORDER_SHADOW, 0x4e4a4e);
+		livesText.setFormat(null, 8, 0xdeeed6, FlxTextAlign.LEFT, FlxTextBorderStyle.SHADOW, 0x4e4a4e);
 		add(livesText);
 		
 		coinsText = new FlxText(0, 0, FlxG.width);
 		coinsText.scrollFactor.set();
-		coinsText.setFormat(null, 8, 0xdeeed6, "center", FlxText.BORDER_SHADOW, 0x4e4a4e);
+		coinsText.setFormat(null, 8, 0xdeeed6, FlxTextAlign.CENTER, FlxTextBorderStyle.SHADOW, 0x4e4a4e);
 		add(coinsText);
 		
 		scoreText = new FlxText(0, 0, FlxG.width);
 		scoreText.scrollFactor.set();
-		scoreText.setFormat(null, 8, 0xdeeed6, "right", FlxText.BORDER_SHADOW, 0x4e4a4e);
+		scoreText.setFormat(null, 8, 0xdeeed6, FlxTextAlign.RIGHT, FlxTextBorderStyle.SHADOW, 0x4e4a4e);
 		add(scoreText);
 	}
 	
 	function setCamera():Void
 	{
-		FlxG.camera.setBounds(0, 0, Reg.level.widthInTiles * Reg.tileWidth, Reg.level.heightInTiles * Reg.tileWidth);
-		FlxG.camera.follow(player, FlxCamera.STYLE_PLATFORMER);
+		FlxG.camera.setScrollBoundsRect(0, 0, Reg.level.widthInTiles * Reg.tileWidth, Reg.level.heightInTiles * Reg.tileWidth, true);
+		FlxG.camera.follow(player, FlxCameraFollowStyle.PLATFORMER);
 	}
 	
 	var timerHelper:Int = 60;
 	
-	override public function update():Void
+	override public function update(e:Float):Void
 	{
 		if (timerHelper <= 0) {
 			Reg.timer--;
@@ -167,7 +169,7 @@ class PlayState extends FlxState
 		
 		if (FlxG.keys.justPressed.R) FlxG.switchState(new PlayState());
 		
-		super.update();
+		super.update(e);
 	}
 	
 	function setText():Void

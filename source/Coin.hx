@@ -29,10 +29,10 @@ class Coin extends FlxSprite
 		velocity.y = -150;
 	}
 	
-	override public function update():Void 
+	override public function update(elapsed:Float):Void 
 	{
 		if (scale.x < 0.05) super.kill();
-		super.update();
+		super.update(elapsed);
 	}
 	
 }

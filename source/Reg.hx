@@ -1,8 +1,8 @@
 package;
 
-import flixel.group.FlxTypedGroup;
+import flixel.group.FlxGroup.FlxTypedGroup;
 import flixel.input.gamepad.FlxGamepad;
-import flixel.util.FlxPoint;
+import flixel.math.FlxPoint;
 import flixel.tile.FlxTilemap;
 import flixel.util.FlxSave;
 
