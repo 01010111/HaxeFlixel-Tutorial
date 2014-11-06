@@ -3,10 +3,6 @@ import flixel.FlxSprite;
 import flixel.tweens.FlxTween;
 import openfl.display.BlendMode;
 
-/**
- * ...
- * @author x01010111
- */
 class Coin extends FlxSprite
 {
 	var bobTween:FlxTween;
@@ -22,7 +18,7 @@ class Coin extends FlxSprite
 	
 	override public function kill():Void 
 	{
-		bobTween.active = false;
+		bobTween.cancel();
 		alive = false;
 		blend = BlendMode.ADD;
 		FlxTween.tween(scale, { x:0, y:3 }, 0.1);
@@ -31,7 +27,7 @@ class Coin extends FlxSprite
 	
 	override public function update():Void 
 	{
-		if (scale.x < 0.05) super.kill();
+		if (scale.x <= 0) super.kill();
 		super.update();
 	}
 	

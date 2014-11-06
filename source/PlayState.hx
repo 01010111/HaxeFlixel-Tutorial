@@ -1,245 +1,147 @@
 package;
 
-import flixel.FlxCamera;
-import flixel.FlxG;
 import flixel.FlxObject;
-import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.group.FlxGroup;
-import flixel.group.FlxTypedGroup;
-import flixel.text.FlxText;
 import flixel.tile.FlxTilemap;
-import flixel.tweens.FlxTween;
-import flixel.util.FlxStringUtil;
+import flixel.FlxSprite;
+import flixel.FlxG;
+import flixel.FlxCamera;
+import flixel.group.FlxGroup;
+import flixel.text.FlxText;
 import flixel.util.FlxTimer;
 import openfl.Assets;
 
 class PlayState extends FlxState
 {
 	var player:Player;
-	var levelObjects:FlxGroup;
-	var level:Int;
-	var exit:Exit;
+	var exit:FlxSprite;
 	var coins:FlxGroup;
-	
-	public function new(LEVEL:Int = 1):Void
-	{
-		super();
-		level = LEVEL;
-	}
+	var collectedCoins:Int = 0;
+	public var level:FlxTilemap;
 	
 	override public function create():Void
 	{
-		init();
+		FlxG.camera.bgColor = 0xFF6DC2CA;
+		Reg.state = this;
+		
 		addLevel();
-		addObjects();
-		addText();
+		addPlayer(2, 22);
+		addExit(118, 19);
+		addCoins();
+		addUIText();
 		setCamera();
 		
 		super.create();
 	}
 	
-	function init():Void
-	{
-		Reg.timer = 60;
-		Reg.coins = 0;
-		FlxG.mouse.visible = false;
-		FlxG.camera.bgColor = 0xff6dc2ca;
-		Reg.hasWon = false;
-	}
-	
 	function addLevel():Void
 	{
-		Reg.level = new FlxTilemap();
-		Reg.level.loadMap("assets/data/Map" + level + "_Level.csv", "assets/images/tiles.png", Reg.tileWidth, Reg.tileWidth);
-		for (i in 16...31) Reg.level.setTileProperties(i, FlxObject.UP);
-		for (i in 32...63) Reg.level.setTileProperties(i, FlxObject.NONE);
-		add(Reg.level);
-	}
-	
-	function addObjects():Void
-	{
-		Reg.enemies = new FlxTypedGroup();
-		levelObjects = new FlxGroup();
-		add(levelObjects);
-		coins = new FlxGroup();
-		add(coins);
-		
-		var objectData:String = Assets.getText("assets/data/Map" + level + "_Objects.csv");
-		var rows:Array<String> = objectData.split("\n");
-		for (y in 0...rows.length) {
-			var objectsString:Array<String> = rows[y].split(",");
-			var objects:Array<Int> = new Array();
-			for (i in 0...objectsString.length) objects.push(Std.parseInt(objectsString[i]));
-			for (x in 0...objects.length) {
-				switch(objects[x]) {
-					case 1: addPlayer(x, y);
-					case 2: makeDumbEnemy(x, y);
-					case 3: makeSmartEnemy(x, y);
-					case 4: makeCoin(x, y);
-					case 15: makeExit(x, y);
-				}
-			}
-		}
-		
-		levelObjects.add(player);
+		level = new FlxTilemap();
+		level.loadMap(Assets.getText("assets/data/Map1_Level.csv"), "assets/images/tiles.png", 16, 16);
+		for (i in 16...31) level.setTileProperties(i, FlxObject.UP);
+		for (i in 32...63) level.setTileProperties(i, FlxObject.NONE);
+		add(level);
 	}
 	
 	function addPlayer(X:Int, Y:Int):Void
 	{
 		player = new Player(X, Y);
+		add(player);
 	}
 	
-	function makeSmartEnemy(X:Int, Y:Int):Void
+	function addExit(X:Int, Y:Int):Void
 	{
-		var e:SmartEnemy = new SmartEnemy(X, Y);
-		levelObjects.add(e);
-	}
-	
-	function makeDumbEnemy(X:Int, Y:Int):Void
-	{
-		var e:DumbEnemy = new DumbEnemy(X, Y);
-		levelObjects.add(e);
-	}
-	
-	function makeCoin(X:Int, Y:Int):Void
-	{
-		var c:Coin = new Coin(X, Y);
-		coins.add(c);
-	}
-	
-	function makeExit(X:Int, Y:Int):Void
-	{
-		exit = new Exit(X, Y);
+		exit = new FlxSprite(X * 16, Y * 16 - 16);
+		#if debug
+		exit.makeGraphic(16, 32, 0x80FF0000);
+		#else
+		exit.makeGraphic(16, 32, 0x00000000);
+		#end
 		add(exit);
 	}
 	
-	var timerText:FlxText;
-	var livesText:FlxText;
-	var coinsText:FlxText;
-	var scoreText:FlxText;
-	
-	function addText():Void
+	function addCoins():Void
 	{
-		timerText = new FlxText(0, 0, FlxG.width);
-		timerText.scrollFactor.set();
-		timerText.setFormat(null, 8, 0xdeeed6, "left", FlxText.BORDER_SHADOW, 0x4e4a4e);
-		add(timerText);
+		coins = new FlxGroup();
+		add(coins);
 		
-		livesText = new FlxText(0, 0, FlxG.width);
-		livesText.scrollFactor.set();
-		livesText.setFormat(null, 8, 0xdeeed6, "left", FlxText.BORDER_SHADOW, 0x4e4a4e);
-		add(livesText);
-		
+		addCoin(15, 13);
+		addCoin(45, 20);
+		addCoin(46, 20);
+		addCoin(47, 20);
+		addCoin(80, 14);
+		addCoin(81, 14);
+		addCoin(82, 14);
+		addCoin(72, 2);
+		addCoin(74, 2);
+		addCoin(76, 2);
+	}
+	
+	function addCoin(X:Int, Y:Int):Void
+	{
+		var coin:Coin = new Coin(X, Y);
+		coins.add(coin);
+	}
+	
+	var coinsText:FlxText;
+	
+	function addUIText():Void
+	{
 		coinsText = new FlxText(0, 0, FlxG.width);
 		coinsText.scrollFactor.set();
 		coinsText.setFormat(null, 8, 0xdeeed6, "center", FlxText.BORDER_SHADOW, 0x4e4a4e);
 		add(coinsText);
-		
-		scoreText = new FlxText(0, 0, FlxG.width);
-		scoreText.scrollFactor.set();
-		scoreText.setFormat(null, 8, 0xdeeed6, "right", FlxText.BORDER_SHADOW, 0x4e4a4e);
-		add(scoreText);
 	}
 	
 	function setCamera():Void
 	{
-		FlxG.camera.setBounds(0, 0, Reg.level.widthInTiles * Reg.tileWidth, Reg.level.heightInTiles * Reg.tileWidth);
 		FlxG.camera.follow(player, FlxCamera.STYLE_PLATFORMER);
+		FlxG.camera.setBounds(0, 0, level.width - 16, level.height - 16, true);
 	}
-	
-	var timerHelper:Int = 60;
 	
 	override public function update():Void
 	{
-		if (timerHelper <= 0) {
-			Reg.timer--;
-			timerHelper = 60;
-		} else timerHelper--;
+		setUIText();
 		
-		setText();
-		
-		FlxG.collide(levelObjects, Reg.level);
-		FlxG.collide(player, Reg.enemies, killEnemy);
-		FlxG.overlap(player, Reg.enemies, killPlayer);
-		FlxG.overlap(player, coins, getCoins);
-		FlxG.overlap(player, exit, exitLevel);
-		
-		if (FlxG.keys.justPressed.R) FlxG.switchState(new PlayState());
+		FlxG.collide(level, player);
+		FlxG.overlap(coins, player, getCoin);
+		FlxG.overlap(exit, player, winGame);
 		
 		super.update();
 	}
 	
-	function setText():Void
+	function setUIText():Void
 	{
-		timerText.text = "TIMER:" + Reg.timer;
-		livesText.text = "\nLIVESx" + Reg.lives;
-		coinsText.text = "COINSx" + Reg.coins;
-		scoreText.text = "SCORE:\n" + Reg.score;
+		coinsText.text = "COINSx" + collectedCoins;
 	}
 	
-	function killEnemy(p:Player, e:Hitbox):Void
-	{
-		e.parent.kill();
-		e.kill();
-		p._running? p.velocity.y = -500: p.velocity.y = -300;
-	}
-	
-	function killPlayer(p:Player, e:Hitbox):Void
-	{
-		p.kill();
-	}
-	
-	function getCoins(p:Player, c:FlxSprite):Void
+	function getCoin(c:Coin, p:Player):Void
 	{
 		if (c.alive) {
-			Reg.score += 10;
-			Reg.coins++;
 			c.kill();
+			collectedCoins++;
 		}
 	}
 	
-	function exitLevel(p:Player, e:Exit):Void
+	function winGame(e:FlxSprite, p:Player):Void
 	{
-		timerHelper = 600;
-		if (!Reg.hasWon) {
-			levelTransition();
-			new FlxTimer(2, goToNextLevel);
-		}
-		Reg.hasWon = true;
-		p.velocity.x = 0;
-		if (Math.abs((p.x + p.width * 0.5) - (e.x + e.width * 0.5)) > 1) {
-			if (p.x + p.width * 0.5 < e.x + e.width * 0.5) p.velocity.x = 50;
-			else if (p.x + p.width * 0.5 > e.x + e.width * 0.5) p.velocity.x = -50;
-		} else {
+		if (p.isTouching(FlxObject.FLOOR) && !p.hasWon) {
 			p.velocity.x = 0;
 			p.acceleration.x = 0;
+			p.animation.play("check");
+			p.hasWon = true;
+			new FlxTimer(1, leaveStage);
 		}
 	}
 	
-	var shutterPos:Int = 0;
-	
-	function levelTransition():Void
+	public function leaveStage(?t:FlxTimer):Void
 	{
-		for (i in 0...16) {
-			new FlxTimer(i * 0.1, shutter);
-		}
+		openSubState(new WinState());
 	}
 	
-	function shutter(t:FlxTimer):Void
+	public function gameOver(?t:FlxTimer):Void
 	{
-		var shade:FlxSprite = new FlxSprite(0, FlxG.height / 16 * shutterPos);
-		shade.makeGraphic(FlxG.width, Math.floor(FlxG.height / 16), 0xFF000000);
-		shade.scale.set(1,0);
-		shade.scrollFactor.set();
-		FlxTween.tween(shade.scale, { x:8, y:1.2 }, 0.4);
-		add(shade);
-		shutterPos++;
-	}
-	
-	function goToNextLevel(t:FlxTimer):Void
-	{
-		FlxG.switchState(new PlayState());
+		openSubState(new GameOver());
 	}
 	
 }
