@@ -68,7 +68,7 @@ class SmartEnemy extends Enemy
 			}
 		}
 		
-		path = new FlxPath(this, nodes, maxSpeed, FlxPath.YOYO); 										//CREATE A NEW PATH MADE FROM THE TWO NODES
+		path = new FlxPath().start(this, nodes, maxSpeed, FlxPath.YOYO); 										//CREATE A NEW PATH MADE FROM THE TWO NODES
 	}
 	
 	/**

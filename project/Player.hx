@@ -3,7 +3,7 @@ import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
 import flixel.input.gamepad.XboxButtonID;
-import flixel.math.FlxPoint;
+import flixel.util.FlxPoint;
 import flixel.util.FlxTimer;
 
 /**
@@ -54,7 +54,7 @@ class Player extends FlxSprite
 		drag.x = _drag;
 	}
 	
-	override public function update(e:Float):Void 
+	override public function update():Void 
 	{
 		if (_freezeTimer <= 0) {
 			if (alive) {
@@ -62,7 +62,7 @@ class Player extends FlxSprite
 				animations();
 				levelBounds();
 			}
-			super.update(e);
+			super.update();
 		} else _freezeTimer--;
 		Reg.playerPos = FlxPoint.get(x, y);
 	}
@@ -75,7 +75,7 @@ class Player extends FlxSprite
 		
 		if (Reg.joypad == null) Reg.joypad = FlxG.gamepads.lastActive;
 		else {
-			var joyX:Float = Reg.joypad.getXAxis(XboxButtonID.LEFT_ANALOG_STICK);
+			var joyX:Float = Reg.joypad.getXAxis(XboxButtonID.LEFT_ANALOGUE_X);
 			if (Math.abs(joyX) > _deadzone) _xMove += joyX;
 			if (Reg.joypad.justPressed(XboxButtonID.A)) _jump = true;
 			if (Reg.joypad.justReleased(XboxButtonID.A) && velocity.y < 0) velocity.y = velocity.y * 0.5;
@@ -136,7 +136,7 @@ class Player extends FlxSprite
 			drag.x = 0;
 			acceleration.x = 0;
 			animation.play("death");
-			new FlxTimer().start(2, gameOver);
+			new FlxTimer(2, gameOver);
 		}
 	}
 	
