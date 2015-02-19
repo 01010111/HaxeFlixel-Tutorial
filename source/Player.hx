@@ -2,45 +2,31 @@ package ;
 import flixel.FlxG;
 import flixel.FlxObject;
 import flixel.FlxSprite;
+import flixel.input.gamepad.FlxGamepad;
 import flixel.input.gamepad.XboxButtonID;
-import flixel.math.FlxPoint;
+import flixel.math.FlxMath;
 import flixel.util.FlxTimer;
 
-/**
- * ...
- * @author x01010111
- */
 class Player extends FlxSprite
 {
 	var _maxWalkSpeed:Int = 140;
 	var _maxRunSpeed:Int = 200;
+	var _gravity:Int = 1600;
 	var _maxFallSpeed:Int = 800;
 	var _jumpForce:Int = 420;
-	var _gravity:Int = 1600;
-	var _deadzone:Float = 0.3;
-	var _maxAccel:Int = 1000;
+	var _maxAcceleration:Int = 1000;
 	var _drag:Int = 1000;
-	var _freezeTimer:Int = 0;
-	var _oldScore:Int;
-	
-	var _xMove:Float;
-	var _jump:Bool;
-	public var _running:Bool;
-	var _jumpForceFinal:Float;
 	
 	public function new(X:Float, Y:Float) 
 	{
-		_oldScore = Reg.score;
-		
-		super(X * Reg.tileWidth, Y * Reg.tileWidth + Reg.tileWidth);
+		super(X * 16, Y * 16 - 8);
 		loadGraphic("assets/images/andi.png", true, 32, 32);
-		width = 14;
-		offset.x = 9;
-		y = y - height;
+		setSize(14, 24);
+		offset.set(9, 8);
 		
-		animation.add("idle", [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8]);
-		animation.add("walk", [0, 1, 2, 3, 4, 5, 6, 7], 16);
-		animation.add("run" , [0, 1, 2, 3, 4, 5, 6, 7], 24);
+		animation.add("idle", [for (i in 0...64) i < 63? 0: 8]);
+		animation.add("walk", [for (i in 0...8) i], 16);
+		animation.add("run" , [for (i in 0...8) i], 24);
 		animation.add("jump", [15]);
 		animation.add("skid", [14]);
 		animation.add("check", [9, 10, 11], 16, false);
@@ -54,97 +40,88 @@ class Player extends FlxSprite
 		drag.x = _drag;
 	}
 	
+	public var hasWon:Bool = false;
+	
 	override public function update(e:Float):Void 
 	{
-		if (_freezeTimer <= 0) {
-			if (alive) {
-				if (!Reg.hasWon) controls();
-				animations();
-				levelBounds();
-			}
-			super.update(e);
-		} else _freezeTimer--;
-		Reg.playerPos = FlxPoint.get(x, y);
+		if (alive && !hasWon) controls();
+		if (!hasWon) animate();
+		levelConstraints();
+		super.update(e);
 	}
+	
+	var joyPad:FlxGamepad;
+	public var hitEnemy:Bool = false;
 	
 	function controls():Void
 	{
-		_xMove = 0;
-		_jump = false;
-		_running = false;
+		var xForce:Float = 0;
+		var running:Bool = false;
+		var jumping:Bool = false;
 		
-		if (Reg.joypad == null) Reg.joypad = FlxG.gamepads.lastActive;
+		if (joyPad == null) joyPad = FlxG.gamepads.lastActive;
 		else {
-			var joyX:Float = Reg.joypad.getXAxis(XboxButtonID.LEFT_ANALOG_STICK);
-			if (Math.abs(joyX) > _deadzone) _xMove += joyX;
-			if (Reg.joypad.justPressed(XboxButtonID.A)) _jump = true;
-			if (Reg.joypad.justReleased(XboxButtonID.A) && velocity.y < 0) velocity.y = velocity.y * 0.5;
-			if (Reg.joypad.pressed(XboxButtonID.X)) _running = true;
+			var xAxis:Float = joyPad.getXAxis(XboxButtonID.LEFT_ANALOG_STICK);
+			if (Math.abs(xAxis) > 0.3) xForce += xAxis;
+			if (joyPad.justPressed(XboxButtonID.A)) jumping = true;
+			else if (joyPad.justReleased(XboxButtonID.A) && velocity.y < 0) velocity.y = velocity.y * 0.5;
+			if (joyPad.pressed(XboxButtonID.X)) running = true;
+			if (joyPad.pressed(XboxButtonID.BACK)) {
+				Reg.stage = 0;
+				Reg.state.gameOver();
+			}
 		}
 		
-		if (FlxG.keys.anyPressed(["LEFT", "A"])) _xMove += -1;
-		if (FlxG.keys.anyPressed(["RIGHT", "D"])) _xMove += 1;
+		if (FlxG.keys.anyPressed(["LEFT", "A"])) xForce--;
+		if (FlxG.keys.anyPressed(["RIGHT", "D"])) xForce++;
+		if (FlxG.keys.anyJustPressed(["SPACE", "UP", "W", "C"])) jumping = true;
+		if (FlxG.keys.anyJustReleased(["SPACE", "UP", "W", "C"])) velocity.y = velocity.y * 0.5;
+		if (FlxG.keys.anyPressed(["SHIFT", "X"])) running = true;
 		
-		if (FlxG.keys.anyJustPressed(["SPACE", "UP", "W"])) _jump = true;
-		if (FlxG.keys.anyJustReleased(["SPACE", "UP", "W"]) && velocity.y < 0) velocity.y = velocity.y * 0.5;
+		xForce = FlxMath.bound(xForce, -1, 1);
 		
-		if (FlxG.keys.anyPressed(["SHIFT", "Z"])) _running = true;
+		running? maxVelocity.x = _maxRunSpeed: maxVelocity.x = _maxWalkSpeed;
+		acceleration.x = xForce * _maxAcceleration;
+		if (jumping && isTouching(FlxObject.FLOOR)) {
+			var finalJumpForce:Float = -(_jumpForce + Math.abs(velocity.x * 0.25));
+			velocity.y = finalJumpForce;
+		}
 		
-		_running? maxVelocity.x = _maxRunSpeed: maxVelocity.x = _maxWalkSpeed;
-		_xMove = Math.min(Math.max(_xMove, -1), 1);
-		acceleration.x = _xMove * _maxAccel;
-		if (_jump && isTouching(FlxObject.FLOOR)) {
-			_jumpForceFinal = _jumpForce + Math.abs(velocity.x * 0.25);
-			velocity.y = -_jumpForceFinal;
+		if (hitEnemy) {
+			if (running) velocity.y = -_jumpForce * 1.25;
+			else velocity.y = -_jumpForce * 0.75;
+			hitEnemy = false;
 		}
 	}
 	
-	function animations() {
+	function animate():Void
+	{
 		if (velocity.x > 0) facing = FlxObject.RIGHT;
 		else if (velocity.x < 0) facing = FlxObject.LEFT;
-		if (!isTouching(FlxObject.FLOOR)) animation.play("jump");
+		if (!alive) animation.play("death");
+		else if (!isTouching(FlxObject.FLOOR)) animation.play("jump");
 		else {
 			if (velocity.x == 0) animation.play("idle");
-			else if (velocity.x > 0 && _xMove < 0 || velocity.x < 0 && _xMove > 0) animation.play("skid");
-			else if (_running) animation.play("run");
+			else if (velocity.x > 0 && acceleration.x < 0 || velocity.x < 0 && acceleration.x > 0) animation.play("skid");
+			else if (Math.abs(velocity.x) > _maxWalkSpeed) animation.play("run");
 			else animation.play("walk");
-		}
-		if (Reg.hasWon && velocity.x == 0) {
-			alive = false;
-			animation.play("check");
 		}
 	}
 	
-	function levelBounds():Void
+	function levelConstraints():Void
 	{
 		if (x < 0) velocity.x = _maxRunSpeed;
-		else if (x > Reg.level.widthInTiles * Reg.tileWidth - width) velocity.x = -_maxRunSpeed;
-		
-		if (y > Reg.level.heightInTiles * Reg.tileWidth) kill();
+		else if (x > Reg.state.level.width - 16 - width) velocity.x = -_maxRunSpeed;
+		if (alive && y > Reg.state.level.height) kill();
 	}
 	
 	override public function kill():Void 
 	{
-		if (alive) {
-			if (y < Reg.level.heightInTiles * Reg.tileWidth) {
-				velocity.set(velocity.x * -1, -_jumpForce);
-				_freezeTimer = 15;
-			} else 	velocity.set(0, -_jumpForce * 1.5);
-			alive = false;
-			FlxG.camera.follow(null);
-			allowCollisions = FlxObject.NONE;
-			drag.x = 0;
-			acceleration.x = 0;
-			animation.play("death");
-			new FlxTimer().start(2, gameOver);
-		}
-	}
-	
-	function gameOver(T:FlxTimer):Void
-	{
-		super.kill();
-		Reg.score = _oldScore;
-		FlxG.switchState(new PlayState());
+		alive = false;
+		velocity.set(0, -500);
+		acceleration.x = 0;
+		allowCollisions = FlxObject.NONE;
+		new FlxTimer().start(1, Reg.state.gameOver);
 	}
 	
 }

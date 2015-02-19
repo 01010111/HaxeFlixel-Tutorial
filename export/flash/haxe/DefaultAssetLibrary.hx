@@ -12,7 +12,7 @@ import lime.utils.ByteArray;
 import lime.utils.UInt8Array;
 import lime.Assets;
 
-#if sys
+#if (sys || nodejs)
 import sys.FileSystem;
 #end
 
@@ -46,18 +46,28 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		className.set ("assets/data/Map1_Level.csv", __ASSET__assets_data_map1_level_csv);
 		type.set ("assets/data/Map1_Level.csv", AssetType.TEXT);
+		className.set ("assets/data/Map1_Levelb.csv", __ASSET__assets_data_map1_levelb_csv);
+		type.set ("assets/data/Map1_Levelb.csv", AssetType.TEXT);
 		className.set ("assets/data/Map1_Objects.csv", __ASSET__assets_data_map1_objects_csv);
 		type.set ("assets/data/Map1_Objects.csv", AssetType.TEXT);
 		className.set ("assets/images/andi.png", __ASSET__assets_images_andi_png);
 		type.set ("assets/images/andi.png", AssetType.IMAGE);
+		className.set ("assets/images/bg_mountain1.png", __ASSET__assets_images_bg_mountain1_png);
+		type.set ("assets/images/bg_mountain1.png", AssetType.IMAGE);
+		className.set ("assets/images/bg_mountain2.png", __ASSET__assets_images_bg_mountain2_png);
+		type.set ("assets/images/bg_mountain2.png", AssetType.IMAGE);
 		className.set ("assets/images/cloud.png", __ASSET__assets_images_cloud_png);
 		type.set ("assets/images/cloud.png", AssetType.IMAGE);
+		className.set ("assets/images/cloud1.png", __ASSET__assets_images_cloud1_png);
+		type.set ("assets/images/cloud1.png", AssetType.IMAGE);
+		className.set ("assets/images/cloud2.png", __ASSET__assets_images_cloud2_png);
+		type.set ("assets/images/cloud2.png", AssetType.IMAGE);
 		className.set ("assets/images/coin.png", __ASSET__assets_images_coin_png);
 		type.set ("assets/images/coin.png", AssetType.IMAGE);
-		className.set ("assets/images/dumbEnemy.png", __ASSET__assets_images_dumbenemy_png);
-		type.set ("assets/images/dumbEnemy.png", AssetType.IMAGE);
-		className.set ("assets/images/smartEnemy.png", __ASSET__assets_images_smartenemy_png);
-		type.set ("assets/images/smartEnemy.png", AssetType.IMAGE);
+		className.set ("assets/images/enemy1.png", __ASSET__assets_images_enemy1_png);
+		type.set ("assets/images/enemy1.png", AssetType.IMAGE);
+		className.set ("assets/images/enemy2.png", __ASSET__assets_images_enemy2_png);
+		type.set ("assets/images/enemy2.png", AssetType.IMAGE);
 		className.set ("assets/images/tiles.png", __ASSET__assets_images_tiles_png);
 		type.set ("assets/images/tiles.png", AssetType.IMAGE);
 		className.set ("assets/music/music-goes-here.txt", __ASSET__assets_music_music_goes_here_txt);
@@ -77,6 +87,10 @@ class DefaultAssetLibrary extends AssetLibrary {
 		path.set (id, id);
 		
 		type.set (id, AssetType.TEXT);
+		id = "assets/data/Map1_Levelb.csv";
+		path.set (id, id);
+		
+		type.set (id, AssetType.TEXT);
 		id = "assets/data/Map1_Objects.csv";
 		path.set (id, id);
 		
@@ -85,7 +99,23 @@ class DefaultAssetLibrary extends AssetLibrary {
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
+		id = "assets/images/bg_mountain1.png";
+		path.set (id, id);
+		
+		type.set (id, AssetType.IMAGE);
+		id = "assets/images/bg_mountain2.png";
+		path.set (id, id);
+		
+		type.set (id, AssetType.IMAGE);
 		id = "assets/images/cloud.png";
+		path.set (id, id);
+		
+		type.set (id, AssetType.IMAGE);
+		id = "assets/images/cloud1.png";
+		path.set (id, id);
+		
+		type.set (id, AssetType.IMAGE);
+		id = "assets/images/cloud2.png";
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
@@ -93,11 +123,11 @@ class DefaultAssetLibrary extends AssetLibrary {
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
-		id = "assets/images/dumbEnemy.png";
+		id = "assets/images/enemy1.png";
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
-		id = "assets/images/smartEnemy.png";
+		id = "assets/images/enemy2.png";
 		path.set (id, id);
 		
 		type.set (id, AssetType.IMAGE);
@@ -140,6 +170,11 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		
 		
+		
+		
+		
+		
+		
 		#end
 		
 		#if (windows || mac || linux)
@@ -149,23 +184,38 @@ class DefaultAssetLibrary extends AssetLibrary {
 		className.set ("assets/data/Map1_Level.csv", __ASSET__assets_data_map1_level_csv);
 		type.set ("assets/data/Map1_Level.csv", AssetType.TEXT);
 		
+		className.set ("assets/data/Map1_Levelb.csv", __ASSET__assets_data_map1_levelb_csv);
+		type.set ("assets/data/Map1_Levelb.csv", AssetType.TEXT);
+		
 		className.set ("assets/data/Map1_Objects.csv", __ASSET__assets_data_map1_objects_csv);
 		type.set ("assets/data/Map1_Objects.csv", AssetType.TEXT);
 		
 		className.set ("assets/images/andi.png", __ASSET__assets_images_andi_png);
 		type.set ("assets/images/andi.png", AssetType.IMAGE);
 		
+		className.set ("assets/images/bg_mountain1.png", __ASSET__assets_images_bg_mountain1_png);
+		type.set ("assets/images/bg_mountain1.png", AssetType.IMAGE);
+		
+		className.set ("assets/images/bg_mountain2.png", __ASSET__assets_images_bg_mountain2_png);
+		type.set ("assets/images/bg_mountain2.png", AssetType.IMAGE);
+		
 		className.set ("assets/images/cloud.png", __ASSET__assets_images_cloud_png);
 		type.set ("assets/images/cloud.png", AssetType.IMAGE);
+		
+		className.set ("assets/images/cloud1.png", __ASSET__assets_images_cloud1_png);
+		type.set ("assets/images/cloud1.png", AssetType.IMAGE);
+		
+		className.set ("assets/images/cloud2.png", __ASSET__assets_images_cloud2_png);
+		type.set ("assets/images/cloud2.png", AssetType.IMAGE);
 		
 		className.set ("assets/images/coin.png", __ASSET__assets_images_coin_png);
 		type.set ("assets/images/coin.png", AssetType.IMAGE);
 		
-		className.set ("assets/images/dumbEnemy.png", __ASSET__assets_images_dumbenemy_png);
-		type.set ("assets/images/dumbEnemy.png", AssetType.IMAGE);
+		className.set ("assets/images/enemy1.png", __ASSET__assets_images_enemy1_png);
+		type.set ("assets/images/enemy1.png", AssetType.IMAGE);
 		
-		className.set ("assets/images/smartEnemy.png", __ASSET__assets_images_smartenemy_png);
-		type.set ("assets/images/smartEnemy.png", AssetType.IMAGE);
+		className.set ("assets/images/enemy2.png", __ASSET__assets_images_enemy2_png);
+		type.set ("assets/images/enemy2.png", AssetType.IMAGE);
 		
 		className.set ("assets/images/tiles.png", __ASSET__assets_images_tiles_png);
 		type.set ("assets/images/tiles.png", AssetType.IMAGE);
@@ -277,7 +327,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 		buffer.src = cast (Type.createInstance (className.get (id), []), Sound);
 		return buffer;
 		
-		#elseif js
+		#elseif html5
 		
 		return null;
 		//return new Sound (new URLRequest (path.get (id)));
@@ -299,7 +349,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		return cast (Type.createInstance (className.get (id), []), ByteArray);
 		
-		#elseif js
+		#elseif html5
 		
 		var bytes:ByteArray = null;
 		var data = Preloader.loaders.get (path.get (id)).data;
@@ -378,7 +428,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 		
 		return Image.fromBitmapData (cast (Type.createInstance (className.get (id), []), BitmapData));
 		
-		#elseif js
+		#elseif html5
 		
 		return Image.fromImageElement (Preloader.images.get (path.get (id)));
 		
@@ -405,7 +455,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 		//return sound;
 		return null;
 		
-		#elseif js
+		#elseif html5
 		
 		return null;
 		//return new Sound (new URLRequest (path.get (id)));
@@ -438,7 +488,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 	
 	public override function getText (id:String):String {
 		
-		#if js
+		#if html5
 		
 		var bytes:ByteArray = null;
 		var data = Preloader.loaders.get (path.get (id)).data;
@@ -706,7 +756,7 @@ class DefaultAssetLibrary extends AssetLibrary {
 	
 	public override function loadText (id:String, handler:String -> Void):Void {
 		
-		//#if js
+		//#if html5
 		
 		/*if (path.exists (id)) {
 			
@@ -754,12 +804,17 @@ class DefaultAssetLibrary extends AssetLibrary {
 #if flash
 
 @:keep @:bind #if display private #end class __ASSET__assets_data_map1_level_csv extends flash.utils.ByteArray { }
+@:keep @:bind #if display private #end class __ASSET__assets_data_map1_levelb_csv extends flash.utils.ByteArray { }
 @:keep @:bind #if display private #end class __ASSET__assets_data_map1_objects_csv extends flash.utils.ByteArray { }
 @:keep @:bind #if display private #end class __ASSET__assets_images_andi_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_images_bg_mountain1_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_images_bg_mountain2_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_images_cloud_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_images_cloud1_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_images_cloud2_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_images_coin_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
-@:keep @:bind #if display private #end class __ASSET__assets_images_dumbenemy_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
-@:keep @:bind #if display private #end class __ASSET__assets_images_smartenemy_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_images_enemy1_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
+@:keep @:bind #if display private #end class __ASSET__assets_images_enemy2_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_images_tiles_png extends flash.display.BitmapData { public function new () { super (0, 0, true, 0); } }
 @:keep @:bind #if display private #end class __ASSET__assets_music_music_goes_here_txt extends flash.utils.ByteArray { }
 @:keep @:bind #if display private #end class __ASSET__assets_sounds_sounds_go_here_txt extends flash.utils.ByteArray { }
@@ -770,6 +825,11 @@ class DefaultAssetLibrary extends AssetLibrary {
 #elseif html5
 
 #if openfl
+
+
+
+
+
 
 
 
@@ -795,17 +855,22 @@ class DefaultAssetLibrary extends AssetLibrary {
 
 //
 //@:file("assets/data/Map1_Level.csv") class __ASSET__assets_data_map1_level_csv extends lime.utils.ByteArray {}
+//@:file("assets/data/Map1_Levelb.csv") class __ASSET__assets_data_map1_levelb_csv extends lime.utils.ByteArray {}
 //@:file("assets/data/Map1_Objects.csv") class __ASSET__assets_data_map1_objects_csv extends lime.utils.ByteArray {}
 //@:bitmap("assets/images/andi.png") class __ASSET__assets_images_andi_png extends openfl.display.BitmapData {}
+//@:bitmap("assets/images/bg_mountain1.png") class __ASSET__assets_images_bg_mountain1_png extends openfl.display.BitmapData {}
+//@:bitmap("assets/images/bg_mountain2.png") class __ASSET__assets_images_bg_mountain2_png extends openfl.display.BitmapData {}
 //@:bitmap("assets/images/cloud.png") class __ASSET__assets_images_cloud_png extends openfl.display.BitmapData {}
+//@:bitmap("assets/images/cloud1.png") class __ASSET__assets_images_cloud1_png extends openfl.display.BitmapData {}
+//@:bitmap("assets/images/cloud2.png") class __ASSET__assets_images_cloud2_png extends openfl.display.BitmapData {}
 //@:bitmap("assets/images/coin.png") class __ASSET__assets_images_coin_png extends openfl.display.BitmapData {}
-//@:bitmap("assets/images/dumbEnemy.png") class __ASSET__assets_images_dumbenemy_png extends openfl.display.BitmapData {}
-//@:bitmap("assets/images/smartEnemy.png") class __ASSET__assets_images_smartenemy_png extends openfl.display.BitmapData {}
+//@:bitmap("assets/images/enemy1.png") class __ASSET__assets_images_enemy1_png extends openfl.display.BitmapData {}
+//@:bitmap("assets/images/enemy2.png") class __ASSET__assets_images_enemy2_png extends openfl.display.BitmapData {}
 //@:bitmap("assets/images/tiles.png") class __ASSET__assets_images_tiles_png extends openfl.display.BitmapData {}
 //@:file("assets/music/music-goes-here.txt") class __ASSET__assets_music_music_goes_here_txt extends lime.utils.ByteArray {}
 //@:file("assets/sounds/sounds-go-here.txt") class __ASSET__assets_sounds_sounds_go_here_txt extends lime.utils.ByteArray {}
-//@:sound("C:/HaxeToolkit/haxe/lib/flixel/3,3,5/assets/sounds/beep.mp3") class __ASSET__assets_sounds_beep_mp3 extends openfl.media.Sound {}
-//@:sound("C:/HaxeToolkit/haxe/lib/flixel/3,3,5/assets/sounds/flixel.mp3") class __ASSET__assets_sounds_flixel_mp3 extends openfl.media.Sound {}
+//@:sound("C:/HaxeToolkit/haxe/lib/flixel/git/assets/sounds/beep.mp3") class __ASSET__assets_sounds_beep_mp3 extends openfl.media.Sound {}
+//@:sound("C:/HaxeToolkit/haxe/lib/flixel/git/assets/sounds/flixel.mp3") class __ASSET__assets_sounds_flixel_mp3 extends openfl.media.Sound {}
 //
 //
 
